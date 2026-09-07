@@ -3,124 +3,938 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSIxALIM</title>
+
+    <title>CSIxALIM — Cybersecurity Intelligence</title>
+    <meta name="description" content="CSIxALIM — Cybersecurity Intelligence, OSINT and Cybersecurity">
 
     <style>
+
+        /* =========================
+           RESET
+        ========================= */
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background: #050505;
-            color: white;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(229, 9, 20, 0.10), transparent 35%),
+                #050505;
+            color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* =========================
+           BACKGROUND GRID
+        ========================= */
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.08;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+
+            background-size: 50px 50px;
+
+            mask-image: linear-gradient(
+                to bottom,
+                black,
+                transparent 80%
+            );
+        }
+
+        /* =========================
+           RED SCAN LINE
+        ========================= */
+
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #e50914;
+            box-shadow: 0 0 15px #e50914;
+            opacity: 0.35;
+            animation: scan 6s linear infinite;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+            }
+
+            50% {
+                top: 100%;
+            }
+
+            100% {
+                top: 0;
+            }
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .page {
+            width: 100%;
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            padding: 50px 20px;
         }
 
-        .card {
-            width: 380px;
-            padding: 40px 25px;
+        .container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+        }
+
+        /* =========================
+           TOP STATUS
+        ========================= */
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+
+            color: #666;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #e50914;
+            box-shadow: 0 0 10px #e50914;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* =========================
+           PROFILE
+        ========================= */
+
+        .profile {
             text-align: center;
         }
 
+        .avatar {
+            width: 105px;
+            height: 105px;
+            margin: 0 auto 22px;
+
+            border: 1px solid #333;
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                radial-gradient(circle, #151515, #050505);
+
+            position: relative;
+
+            box-shadow:
+                0 0 0 5px #080808,
+                0 0 35px rgba(229, 9, 20, 0.12);
+        }
+
+        .avatar::before {
+            content: "";
+            position: absolute;
+            inset: -7px;
+            border-radius: 50%;
+            border: 1px solid rgba(229, 9, 20, 0.4);
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            animation: rotate 8s linear infinite;
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .avatar-text {
+            font-size: 17px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .avatar-text span {
+            color: #e50914;
+        }
+
         .logo {
-            font-size: 36px;
+            font-size: clamp(36px, 10vw, 55px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .logo .red {
+            color: #e50914;
+        }
+
+        .subtitle {
+            margin-top: 12px;
+            color: #777;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+
+        .description {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           DIVIDER
+        ========================= */
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 32px 0 20px;
+        }
+
+        .divider-line {
+            height: 1px;
+            flex: 1;
+            background: #252525;
+        }
+
+        .divider-text {
+            color: #555;
+            font-size: 9px;
+            letter-spacing: 3px;
+        }
+
+        /* =========================
+           LINKS
+        ========================= */
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link {
+            min-height: 62px;
+            padding: 0 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border: 1px solid #242424;
+            background:
+                linear-gradient(
+                    100deg,
+                    #0a0a0a,
+                    #0d0d0d
+                );
+
+            position: relative;
+            overflow: hidden;
+
+            transition:
+                transform 0.25s ease,
+                border-color 0.25s ease,
+                background 0.25s ease;
+
+            animation: appear 0.7s ease both;
+        }
+
+        .link:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .link:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .link:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .link:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .link::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: #e50914;
+            transform: scaleY(0);
+            transition: transform 0.25s ease;
+        }
+
+        .link:hover {
+            transform: translateX(5px);
+            border-color: #e50914;
+            background: #101010;
+        }
+
+        .link:hover::before {
+            transform: scaleY(1);
+        }
+
+        .link-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #292929;
+            color: #e50914;
+
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .link-name {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .link-desc {
+            margin-top: 4px;
+            color: #555;
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+        .arrow {
+            color: #555;
+            font-size: 18px;
+            transition: 0.25s;
+        }
+
+        .link:hover .arrow {
+            color: #e50914;
+            transform: translateX(4px);
+        }
+
+        /* =========================
+           INTELLIGENCE SECTION
+        ========================= */
+
+        .intel {
+            margin-top: 40px;
+        }
+
+        .intel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 14px;
+        }
+
+        .intel-title {
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .intel-number {
+            color: #e50914;
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        .intel-card {
+            padding: 20px;
+            border: 1px solid #222;
+            background: #090909;
+            position: relative;
+        }
+
+        .intel-card:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .intel-tag {
+            display: inline-block;
+
+            padding: 5px 8px;
+            margin-bottom: 12px;
+
+            border: 1px solid rgba(229, 9, 20, 0.4);
+            color: #e50914;
+
+            font-size: 8px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .intel-card h3 {
+            font-size: 15px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .intel-card p {
+            color: #666;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .intel-corner {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+
+            width: 12px;
+            height: 12px;
+
+            border-right: 1px solid #e50914;
+            border-bottom: 1px solid #e50914;
+        }
+
+        /* =========================
+           TERMINAL
+        ========================= */
+
+        .terminal {
+            margin-top: 30px;
+            padding: 17px;
+
+            background: #080808;
+            border: 1px solid #202020;
+
+            font-family: "Courier New", monospace;
+            font-size: 10px;
+            line-height: 1.8;
+
+            color: #666;
+        }
+
+        .terminal .red {
+            color: #e50914;
+        }
+
+        .terminal .white {
+            color: #aaa;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 6px;
+            height: 11px;
+            background: #e50914;
+            vertical-align: middle;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            margin-top: 35px;
+            padding-bottom: 20px;
+            text-align: center;
+        }
+
+        .footer-line {
+            width: 100%;
+            height: 1px;
+            background: #181818;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo {
+            font-size: 12px;
             font-weight: 900;
             letter-spacing: 2px;
         }
 
-        .logo span {
-            color: #E50914;
+        .footer-logo span {
+            color: #e50914;
         }
 
-        .subtitle {
-            color: #888;
-            font-size: 11px;
-            letter-spacing: 3px;
+        .footer-text {
             margin-top: 8px;
-            margin-bottom: 35px;
-        }
-
-        .description {
-            color: #bbb;
-            margin-bottom: 25px;
-        }
-
-        .link {
-            display: block;
-            padding: 16px;
-            margin: 12px 0;
-            border: 1px solid #333;
-            color: white;
-            text-decoration: none;
-            background: #0b0b0b;
-            transition: 0.3s;
-        }
-
-        .link:hover {
-            border-color: #E50914;
-            color: #E50914;
-            transform: translateY(-2px);
-        }
-
-        .line {
-            height: 1px;
-            background: #E50914;
-            margin: 30px 0;
-        }
-
-        .footer {
-            color: #555;
-            font-size: 11px;
+            color: #444;
+            font-size: 9px;
             letter-spacing: 2px;
         }
+
+        .copyright {
+            margin-top: 18px;
+            color: #292929;
+            font-size: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 520px) {
+
+            .page {
+                padding: 30px 15px;
+            }
+
+            .top-bar {
+                margin-bottom: 25px;
+            }
+
+            .avatar {
+                width: 90px;
+                height: 90px;
+            }
+
+            .logo {
+                font-size: 40px;
+            }
+
+            .subtitle {
+                font-size: 9px;
+                letter-spacing: 3px;
+            }
+
+            .description {
+                font-size: 13px;
+            }
+
+            .link {
+                min-height: 58px;
+            }
+
+            .intel-card {
+                padding: 17px;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div class="card">
+    <div class="scan-line"></div>
 
-        <div class="logo">
-            CSI<span>x</span>ALIM
+    <main class="page">
+
+        <div class="container">
+
+            <!-- STATUS -->
+
+            <div class="top-bar">
+
+                <div class="status">
+                    <div class="status-dot"></div>
+                    SYSTEM ONLINE
+                </div>
+
+                <div>
+                    CSI / 001
+                </div>
+
+            </div>
+
+
+            <!-- PROFILE -->
+
+            <section class="profile">
+
+                <div class="avatar">
+                    <div class="avatar-text">
+                        CSI<span>x</span>ALIM
+                    </div>
+                </div>
+
+                <h1 class="logo">
+                    CSI<span class="red">x</span>ALIM
+                </h1>
+
+                <div class="subtitle">
+                    CYBERSECURITY INTELLIGENCE
+                </div>
+
+                <p class="description">
+                    Cybersecurity • OSINT • Intelligence
+                    <br>
+                    Анализ угроз. Безопасность. Информация.
+                </p>
+
+            </section>
+
+
+            <!-- LINKS -->
+
+            <div class="divider">
+
+                <div class="divider-line"></div>
+
+                <div class="divider-text">
+                    CONNECT
+                </div>
+
+                <div class="divider-line"></div>
+
+            </div>
+
+
+            <section class="links">
+
+                <!-- INSTAGRAM -->
+
+                <a
+                    class="link"
+                    href="https://www.instagram.com/csixalim/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    <div class="link-left">
+
+                        <div class="icon">
+                            IG
+                        </div>
+
+                        <div>
+
+                            <div class="link-name">
+                                INSTAGRAM
+                            </div>
+
+                            <div class="link-desc">
+                                CYBER CONTENT
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="arrow">
+                        ↗
+                    </div>
+
+                </a>
+
+
+                <!-- TELEGRAM -->
+
+                <a
+                    class="link"
+                    href="https://t.me/csixalim"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    <div class="link-left">
+
+                        <div class="icon">
+                            TG
+                        </div>
+
+                        <div>
+
+                            <div class="link-name">
+                                TELEGRAM
+                            </div>
+
+                            <div class="link-desc">
+                                NEWS & INTELLIGENCE
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="arrow">
+                        ↗
+                    </div>
+
+                </a>
+
+
+                <!-- TIKTOK -->
+
+                <a
+                    class="link"
+                    href="https://tiktok.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    <div class="link-left">
+
+                        <div class="icon">
+                            TT
+                        </div>
+
+                        <div>
+
+                            <div class="link-name">
+                                TIKTOK
+                            </div>
+
+                            <div class="link-desc">
+                                SHORT CYBER CONTENT
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="arrow">
+                        ↗
+                    </div>
+
+                </a>
+
+
+                <!-- GITHUB -->
+
+                <a
+                    class="link"
+                    href="https://github.com/AAT1S"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    <div class="link-left">
+
+                        <div class="icon">
+                            GH
+                        </div>
+
+                        <div>
+
+                            <div class="link-name">
+                                GITHUB
+                            </div>
+
+                            <div class="link-desc">
+                                PROJECTS & CODE
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="arrow">
+                        ↗
+                    </div>
+
+                </a>
+
+            </section>
+
+
+            <!-- INTELLIGENCE -->
+
+            <section class="intel">
+
+                <div class="intel-header">
+
+                    <div class="intel-title">
+                        LATEST INTELLIGENCE
+                    </div>
+
+                    <div class="intel-number">
+                        04
+                    </div>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <div class="intel-tag">
+                        THREAT / 01
+                    </div>
+
+                    <h3>
+                        Фишинг: одна ссылка может отдать ваши данные
+                    </h3>
+
+                    <p>
+                        Как распознать поддельные сообщения,
+                        сайты и попытки украсть аккаунт.
+                    </p>
+
+                    <div class="intel-corner"></div>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <div class="intel-tag">
+                        AI / 02
+                    </div>
+
+                    <h3>
+                        AI меняет правила кибератак
+                    </h3>
+
+                    <p>
+                        Искусственный интеллект делает
+                        социальную инженерию быстрее и убедительнее.
+                    </p>
+
+                    <div class="intel-corner"></div>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <div class="intel-tag">
+                        OSINT / 03
+                    </div>
+
+                    <h3>
+                        Что интернет знает о тебе?
+                    </h3>
+
+                    <p>
+                        Открытые источники могут раскрыть
+                        больше информации, чем кажется.
+                    </p>
+
+                    <div class="intel-corner"></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TERMINAL -->
+
+            <div class="terminal">
+
+                <div>
+                    <span class="red">root@csixalim</span>:~$
+                    <span class="white">security_status</span>
+                </div>
+
+                <div>
+                    &gt; intelligence_mode: ACTIVE
+                </div>
+
+                <div>
+                    &gt; threat_monitoring: ENABLED
+                </div>
+
+                <div>
+                    &gt; status: <span class="white">ONLINE</span>
+                    <span class="cursor"></span>
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <footer>
+
+                <div class="footer-line"></div>
+
+                <div class="footer-logo">
+                    CSI<span>x</span>ALIM
+                </div>
+
+                <div class="footer-text">
+                    CYBERSECURITY INTELLIGENCE
+                </div>
+
+                <div class="copyright">
+                    © 2026 CSIxALIM — ALL SYSTEMS OPERATIONAL
+                </div>
+
+            </footer>
+
         </div>
 
-        <div class="subtitle">
-            CYBERSECURITY INTELLIGENCE
-        </div>
-
-        <div class="description">
-            Cybersecurity • OSINT • Intelligence
-        </div>
-
-        <a class="link" href="#" target="_blank">
-            INSTAGRAM
-        </a>
-
-        <a class="link" href="#" target="_blank">
-            TELEGRAM
-        </a>
-
-        <a class="link" href="#" target="_blank">
-            TIKTOK
-        </a>
-
-        <a class="link" href="#" target="_blank">
-            YOUTUBE
-        </a>
-
-        <div class="line"></div>
-
-        <div class="footer">
-            CSIxALIM — CYBERSECURITY INTELLIGENCE
-        </div>
-
-    </div>
+    </main>
 
 </body>
 </html>
